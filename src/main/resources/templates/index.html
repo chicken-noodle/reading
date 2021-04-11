@@ -161,16 +161,13 @@
                             <div class="card-header">
                                 <h4>经典列表</h4>
                             </div>
-                            <div class="card-body">
-                                <div class="form-control" style="border: none"><a href="/login">经典作品标题</a></div>
-                                <div class="form-control" style="border: none"><a href="/login">经典作品标题</a></div>
-                                <div class="form-control" style="border: none"><a href="/login">经典作品标题</a></div>
-                                <div class="form-control" style="border: none"><a href="/login">经典作品标题</a></div>
-                                <div class="form-control" style="border: none"><a href="/login">经典作品标题</a></div>
+                            <div id="work-list" class="card-body">
+
                             </div>
                         </div>
                     </div>
-
+                </div>
+            </div>
 
         </main>
         <!--End 页面主要内容-->
@@ -186,6 +183,30 @@
 
 <!--图表插件-->
 <script type="text/javascript" src="js/Chart.js"></script>
+<script>
+    $(function () {
+        $.ajax({
+            type: 'get',
+            url: '/workList',
+            traditional: true,
+            //同步
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+                //<div class="form-control" style="border: none"><a href="/login">经典作品标题</a></div>
+                var myHtml = "";
+                var myJson = data;
+                var len = Object.keys(myJson).length;
+                for (var i = 0; i < len; i++) {
+                    myHtml += "<div class='form-control' style='border: none'><a href='/classic?id=" + myJson[i].id + "'>" + myJson[i].title + "</a></div>";
+                }
+                $("#work-list").html(myHtml);
+            }, error: function () {
+
+            }
+        });
+    });
+</script>
 
 </body>
 </html>

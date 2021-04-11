@@ -235,6 +235,7 @@
 
     </dependencies>
 
+
     <build>
         <plugins>
 
@@ -255,6 +256,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
             <plugin>
                 <groupId>org.mybatis.generator</groupId>
                 <artifactId>mybatis-generator-maven-plugin</artifactId>

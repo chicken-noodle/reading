@@ -2,6 +2,10 @@ package com.example.reading.dao;
 
 import com.example.reading.entities.Poem;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface PoemMapper {
@@ -16,4 +20,9 @@ public interface PoemMapper {
     int updateByPrimaryKeySelective(Poem record);
 
     int updateByPrimaryKey(Poem record);
+
+    @Select("select * from poem")
+    public List<Poem> selectAllWork();
+
+
 }

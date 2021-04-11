@@ -48,7 +48,7 @@
             <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
         <!-- 指定数据库表  多个表示,可用多个table标签-->
-        <table tableName="file_mp3"
+        <table tableName="small_reply"
                enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false"
@@ -57,41 +57,6 @@
             <property  name="useActualColumnNames"  value="true" />
         </table>
 
-        <table tableName="poem"
-               enableCountByExample="false"
-               enableUpdateByExample="false"
-               enableDeleteByExample="false"
-               enableSelectByExample="false"
-               selectByExampleQueryId="false">
-            <property  name="useActualColumnNames"  value="true" />
-        </table>
-
-        <table tableName="reply"
-               enableCountByExample="false"
-               enableUpdateByExample="false"
-               enableDeleteByExample="false"
-               enableSelectByExample="false"
-               selectByExampleQueryId="false">
-            <property  name="useActualColumnNames"  value="true" />
-        </table>
-
-        <table tableName="topic"
-               enableCountByExample="false"
-               enableUpdateByExample="false"
-               enableDeleteByExample="false"
-               enableSelectByExample="false"
-               selectByExampleQueryId="false">
-            <property  name="useActualColumnNames"  value="true" />
-        </table>
-
-        <table tableName="user"
-               enableCountByExample="false"
-               enableUpdateByExample="false"
-               enableDeleteByExample="false"
-               enableSelectByExample="false"
-               selectByExampleQueryId="false">
-            <property  name="useActualColumnNames"  value="true" />
-        </table>
 
     </context>
 </generatorConfiguration>

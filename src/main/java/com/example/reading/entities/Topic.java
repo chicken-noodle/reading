@@ -30,4 +30,17 @@ public class Topic {
     public void setUsername(String username) {
         this.username = username == null ? null : username.trim();
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("{");
+        sb.append("\"id\":")
+                .append(id);
+        sb.append(",\"topic_title\":\"")
+                .append(topic_title).append('\"');
+        sb.append(",\"username\":\"")
+                .append(username).append('\"');
+        sb.append('}');
+        return sb.toString();
+    }
 }

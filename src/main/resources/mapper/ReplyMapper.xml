@@ -9,7 +9,7 @@
     <result column="bright" jdbcType="VARCHAR" property="bright" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, text, username, like, bright
+    id, text, username, `like`, bright
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -23,7 +23,7 @@
   </delete>
   <insert id="insert" parameterType="com.example.reading.entities.Reply">
     insert into reply (id, text, username, 
-      like, bright)
+      `like`, bright)
     values (#{id,jdbcType=INTEGER}, #{text,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, 
       #{like,jdbcType=INTEGER}, #{bright,jdbcType=VARCHAR})
   </insert>
@@ -39,7 +39,7 @@
       <if test="username != null">
         username,
       </if>
-      <if test="like != null">
+      <if test="`like` != null">
         like,
       </if>
       <if test="bright != null">
@@ -56,7 +56,7 @@
       <if test="username != null">
         #{username,jdbcType=VARCHAR},
       </if>
-      <if test="like != null">
+      <if test="`like` != null">
         #{like,jdbcType=INTEGER},
       </if>
       <if test="bright != null">

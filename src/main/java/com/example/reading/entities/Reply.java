@@ -50,4 +50,21 @@ public class Reply {
     public void setBright(String bright) {
         this.bright = bright == null ? null : bright.trim();
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("{");
+        sb.append("\"id\":")
+                .append(id);
+        sb.append(",\"text\":\"")
+                .append(text).append('\"');
+        sb.append(",\"username\":\"")
+                .append(username).append('\"');
+        sb.append(",\"like\":")
+                .append(like);
+        sb.append(",\"bright\":\"")
+                .append(bright).append('\"');
+        sb.append('}');
+        return sb.toString();
+    }
 }

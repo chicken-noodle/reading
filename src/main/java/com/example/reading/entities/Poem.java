@@ -40,4 +40,19 @@ public class Poem {
     public void setText(String text) {
         this.text = text == null ? null : text.trim();
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("{");
+        sb.append("\"id\":")
+                .append(id);
+        sb.append(",\"title\":\"")
+                .append(title).append('\"');
+        sb.append(",\"guide_lang\":\"")
+                .append(guide_lang).append('\"');
+        sb.append(",\"text\":\"")
+                .append(text).append('\"');
+        sb.append('}');
+        return sb.toString();
+    }
 }
