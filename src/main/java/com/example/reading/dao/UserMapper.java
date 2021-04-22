@@ -23,4 +23,7 @@ public interface UserMapper {
 
     @Select("select * from user where username=#{username} and password=#{password}")
     List<User> lognkCheck(@Param("username") String username, @Param("password") String password );
+
+    @Select("select * from user where username = #{username}")
+    User selectByUsername(String username);
 }

@@ -131,7 +131,8 @@
                         <li class="dropdown dropdown-profile">
                             <a href="javascript:void(0)" data-toggle="dropdown">
                                 <img class="img-avatar img-avatar-48 m-r-10" src="images/users/avatar.jpg" alt="笔下光年"/>
-                                <span>笔下光年 <span class="caret"></span></span>
+                                <span id="name"> <span class="caret"></span></span>
+                                <span id="username" style="display:none;"></span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li><a href="lyear_pages_profile.html"><i class="mdi mdi-account"></i> 个人信息</a></li>
@@ -206,6 +207,28 @@
             }
         });
     });
+
+    $.ajax({
+        type: 'get',
+        url: '/get_info',
+        traditional : true,
+        //同步
+        async: false,
+        dataType: 'text',
+        success: function (data1) {
+            var data;
+            if(data1==""){
+                window.location.href = "/login";
+            }else{
+                data = JSON.parse(data1);
+            }
+            $("#username").text(data.username);
+            $("#name").text(data.name);
+        }, error: function () {
+
+        }
+    });
+
 </script>
 
 </body>

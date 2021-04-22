@@ -2,6 +2,7 @@ package com.example.reading.dao;
 
 import com.example.reading.entities.Topic;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface TopicMapper {
@@ -16,4 +17,7 @@ public interface TopicMapper {
     int updateByPrimaryKeySelective(Topic record);
 
     int updateByPrimaryKey(Topic record);
+
+    @Select("select max(id) from topic")
+    int selectMaxId();
 }

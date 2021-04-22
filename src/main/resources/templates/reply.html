@@ -8,6 +8,8 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/materialdesignicons.min.css" rel="stylesheet">
     <link href="css/style.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="js/jconfirm/jquery-confirm.min.css">
+
 </head>
 
 <body>
@@ -131,7 +133,8 @@
                         <li class="dropdown dropdown-profile">
                             <a href="javascript:void(0)" data-toggle="dropdown">
                                 <img class="img-avatar img-avatar-48 m-r-10" src="images/users/avatar.jpg" alt="笔下光年"/>
-                                <span>笔下光年 <span class="caret"></span></span>
+                                <span id="name"> <span class="caret"></span></span>
+                                <span id="username" style="display:none;"></span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li><a href="lyear_pages_profile.html"><i class="mdi mdi-account"></i> 个人信息</a></li>
@@ -153,8 +156,13 @@
         <main class="lyear-layout-content">
 
             <div class="container-fluid">
-
                 <div class="row">
+                    <button type="button" class="example-p-3 btn btn-block btn-primary center-block" style="width: 50%">
+                        点击回复
+                    </button>
+                </div>
+                <div class="row">
+
                     <div id="reply-list">
 
                     </div>
@@ -172,7 +180,7 @@
 <script src="js/main.min.js"></script>
 <script src="js/bootstrap-notify.min.js"></script>
 <script src="js/lightyear.js"></script>
-
+<script src="js/jconfirm/jquery-confirm.min.js"></script>
 <!--图表插件-->
 <script type="text/javascript" src="js/Chart.js"></script>
 <script>
@@ -198,11 +206,97 @@
                         </div>
                     </div>
         * */
+
+        $.ajax({
+            type: 'get',
+            url: '/get_info',
+            traditional: true,
+            //同步
+            async: false,
+            dataType: 'text',
+            success: function (data1) {
+                var data;
+                if (data1 == "") {
+                    window.location.href = "/login";
+                } else {
+                    data = JSON.parse(data1);
+                }
+                $("#username").text(data.username);
+                $("#name").text(data.name);
+            }, error: function () {
+
+            }
+        });
+
+        $('.example-p-3').on('click', function () {
+            $.confirm({
+                title: '提示',
+                content: '' +
+                    '<form action="" class="formName">' +
+                    '<div class="form-group">' +
+                    '<label>回复内容</label>' +
+                    '<textarea type="text" rows="10" placeholder="回复内容" class="name form-control" required />' +
+                    '</form>',
+                buttons: {
+                    formSubmit: {
+                        text: '提交',
+                        btnClass: 'btn-blue',
+                        action: function () {
+
+                            var name = this.$content.find('.name').val();
+                            var username = $("#username").text();
+                            if (!name) {
+                                $.alert('请输入话题标题！');
+                                return false;
+                            } else {
+                                if (!username) {
+                                    $.alert('请登录！');
+                                    window.location.href = "/login";
+                                    return false;
+                                }
+                                $.ajax({
+                                    type: 'post',
+                                    url: '/post_reply',
+                                    data: {
+                                        "id": id,
+                                        "title": name,
+                                        "username": $("#username").text()
+                                    },
+                                    traditional: true,
+                                    //同步
+                                    async: false,
+                                    dataType: 'json',
+                                    success: function (data) {
+                                        $.alert("回复成功！");
+                                        location.reload();
+                                    }, error: function () {
+                                        $.alert("回复失败！");
+                                    }
+                                });
+
+                            }
+
+                        }
+                    },
+                    cancel: {
+                        text: '取消'
+                    },
+                },
+                onContentReady: function () {
+                    var jc = this;
+                    this.$content.find('form').on('submit', function (e) {
+                        e.preventDefault();
+                        jc.$$formSubmit.trigger('click');
+                    });
+                }
+            });
+        });
+
         //查询回复列表
         $.ajax({
             type: 'get',
             url: '/selectReply',
-            traditional : true,
+            traditional: true,
             data: {
                 "id": id
             },
@@ -214,13 +308,158 @@
                 var myHtml = "";
                 var myJson = data;
                 var len = Object.keys(myJson).length;
-                for(var i=0;i<len;i++){
-                    myHtml += "<div class='col-lg-12'><div class='card'><div class='card-header'><h4>"+(i+1)+"F</h4></div><div class='card-body'>"+myJson[i].text+"</div><pre>小回复：宿舍的</pre><pre>小回复2：宿舍的</pre></div></div>";
+                for (var i = 0; i < len; i++) {
+                    myHtml += "<div class='col-lg-12'><div class='card'><div class='card-header'><h4>" + (i + 1) + "F " + myJson[i].username + "</h4></div><div class='card-body'>" + myJson[i].text + "</div>";
+                    myHtml += "<footer class='card-footer'><span style='display: none' class='cur-id'>"+myJson[i].id+"</span><div style='display: inline-block' class='zan'><span class='mdi mdi-thumb-up-outline'></span><span class='zan_num'> " + myJson[i].like + " </span></div><div style='display: inline-block;margin-left: 20px' class='huifu'><span class='mdi mdi-comment-outline'></span> 回复</div></footer>";
+                    var reply_id = data[i].id;
+                    //alert(reply_id);
+                    $.ajax({
+                        type: 'get',
+                        url: '/selectSmallReply',
+                        data: {
+                            "id": reply_id
+                        },
+                        traditional: true,
+                        //同步
+                        async: false,
+                        dataType: 'json',
+                        success: function (data2) {
+                            var len = Object.keys(data2).length;
+                            if (len == 0) {
+
+                            } else {
+                                for (var j = 0; j < len; j++) {
+                                    myHtml += "<pre>" + data2[j].username + ": " + data2[j].text + "</pre>";
+                                }
+                            }
+
+                        }, error: function () {
+
+                        }
+                    });
+
+
+                    myHtml += "</div></div>";
                 }
-                $("#reply-list").html(myHtml);
+                $("#reply-list").append(myHtml);
             }, error: function () {
 
             }
+        });
+
+        $(".zan").on('click', function () {
+            var cur_id = $(this).parent().find('.cur-id').eq(0).text();
+            if($(this).find('.mdi').eq(0).hasClass('mdi-thumb-up-outline')){
+                $(this).find('.mdi').eq(0).removeClass('mdi-thumb-up-outline');
+                $(this).find('.mdi').eq(0).addClass('mdi-thumb-up');
+                var cur = parseInt($(this).find('.zan_num').eq(0).text())+1;
+                $(this).find('.zan_num').eq(0).text(cur);
+                $.ajax({
+                    type: 'post',
+                    url: '/give_like',
+                    data:{
+                        "id" : cur_id,
+                        "num" : 1
+                    },
+                    traditional : true,
+                    //同步
+                    async: false,
+                    dataType: 'json',
+                    success: function (data) {
+
+                    }, error: function () {
+
+                    }
+                });
+            }else{
+                $(this).find('.mdi').eq(0).removeClass('mdi-thumb-up');
+                $(this).find('.mdi').eq(0).addClass('mdi-thumb-up-outline');
+                var cur = parseInt($(this).find('.zan_num').eq(0).text())-1;
+                $(this).find('.zan_num').eq(0).text(cur);
+                $.ajax({
+                    type: 'post',
+                    url: '/give_like',
+                    data:{
+                        "id" : cur_id,
+                        "num" : -1
+                    },
+                    traditional : true,
+                    //同步
+                    async: false,
+                    dataType: 'json',
+                    success: function (data) {
+
+                    }, error: function () {
+
+                    }
+                });
+            }
+
+        });
+
+        $(".huifu").on('click',function () {
+            var cur_id = $(this).parent().find('.cur-id').eq(0).text();
+            $.confirm({
+                title: '提示',
+                content: '' +
+                    '<form action="" class="formName">' +
+                    '<div class="form-group">' +
+                    '<label>回复内容</label>' +
+                    '<textarea type="text" rows="10" placeholder="回复内容" class="name form-control" required />' +
+                    '</form>',
+                buttons: {
+                    formSubmit: {
+                        text: '提交',
+                        btnClass: 'btn-blue',
+                        action: function () {
+
+                            var name = this.$content.find('.name').val();
+                            var username = $("#username").text();
+                            if (!name) {
+                                $.alert('请输入话题标题！');
+                                return false;
+                            } else {
+                                if (!username) {
+                                    $.alert('请登录！');
+                                    window.location.href = "/login";
+                                    return false;
+                                }
+                                $.ajax({
+                                    type: 'post',
+                                    url: '/post_smallReply',
+                                    data: {
+                                        "id": cur_id,
+                                        "title": name,
+                                        "username": $("#username").text()
+                                    },
+                                    traditional: true,
+                                    //同步
+                                    async: false,
+                                    dataType: 'json',
+                                    success: function (data) {
+                                        $.alert("回复成功！");
+                                        location.reload();
+                                    }, error: function () {
+                                        $.alert("回复失败！");
+                                    }
+                                });
+
+                            }
+
+                        }
+                    },
+                    cancel: {
+                        text: '取消'
+                    },
+                },
+                onContentReady: function () {
+                    var jc = this;
+                    this.$content.find('form').on('submit', function (e) {
+                        e.preventDefault();
+                        jc.$$formSubmit.trigger('click');
+                    });
+                }
+            });
         });
     });
 </script>

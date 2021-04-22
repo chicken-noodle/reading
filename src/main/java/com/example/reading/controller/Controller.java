@@ -1,10 +1,7 @@
 package com.example.reading.controller;
 
 import com.example.reading.dao.*;
-import com.example.reading.entities.Poem;
-import com.example.reading.entities.Reply;
-import com.example.reading.entities.Topic;
-import com.example.reading.entities.User;
+import com.example.reading.entities.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -74,6 +71,43 @@ public class Controller {
         }
     }
 
+    @ResponseBody
+    @RequestMapping("/get_info")
+    public String getInfo(HttpServletRequest request){
+        String username = request.getSession().getAttribute("user") == null ? "":request.getSession().getAttribute("user").toString();
+        if(username.equals("")){
+            return "";
+        }
+        User user = userMapper.selectByUsername(username);
+        return user.toString();
+    }
+
+    @ResponseBody
+    @RequestMapping("/post_topic")
+    public String postTopic(Integer id, String title,String username){
+        Topic topic = new Topic();
+        topic.setTopic_title(title);
+        topic.setUsername(username);
+        topicMapper.insertSelective(topic);
+        int max_id = topicMapper.selectMaxId();
+        mapper.insertPoemTopicRelation(id,max_id);
+        return "true";
+    }
+
+    @ResponseBody
+    @RequestMapping("/post_reply")
+    public String postReply(Integer id, String title,String username){
+        Reply reply = new Reply();
+        reply.setText(title);
+        reply.setBright("0");
+        reply.setLike(0);
+        reply.setUsername(username);
+        replyMapper.insert(reply);
+        int max_id = replyMapper.selectMaxId();
+        mapper.insertTopicReplyRelation(id,max_id);
+        return "true";
+    }
+
     @RequestMapping("/register_check")
     public String registerCheck(User user) {
         userMapper.insertSelective(user);
@@ -129,6 +163,34 @@ public class Controller {
         }
 
         return l.toString();
+    }
+
+    @ResponseBody
+    @RequestMapping("/selectSmallReply")
+    public String selectSmallReply(Integer id) {
+        //接收小回复的列表
+        List<SmallReply> l = new ArrayList<>();
+        //id列表长度
+        l = mapper.selectSmallReply(id);
+        return l.toString();
+    }
+
+    @ResponseBody
+    @RequestMapping("/post_smallReply")
+    public String postSmallReply(Integer id, String title,String username){
+        SmallReply smallReply = new SmallReply();
+        smallReply.setText(title);
+        smallReply.setUsername(username);
+        smallReply.setReply_id(id);
+        mapper.insertSmallReply(smallReply);
+        return "true";
+    }
+
+    @ResponseBody
+    @RequestMapping("/give_like")
+    public String giveLike(Integer id,Integer num){
+        mapper.giveLike(num,id);
+        return "true";
     }
 
 

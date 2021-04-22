@@ -8,6 +8,7 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/materialdesignicons.min.css" rel="stylesheet">
     <link href="css/style.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="js/jconfirm/jquery-confirm.min.css">
 </head>
 
 <body>
@@ -131,7 +132,8 @@
                         <li class="dropdown dropdown-profile">
                             <a href="javascript:void(0)" data-toggle="dropdown">
                                 <img class="img-avatar img-avatar-48 m-r-10" src="images/users/avatar.jpg" alt="笔下光年"/>
-                                <span>笔下光年 <span class="caret"></span></span>
+                                <span id="name"> <span class="caret"></span></span>
+                                <span id="username" style="display:none;"></span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li><a href="lyear_pages_profile.html"><i class="mdi mdi-account"></i> 个人信息</a></li>
@@ -197,10 +199,13 @@
                         <div class="card">
                             <div class="card-header">
                                 <h4>经典交流</h4>
+
+
                             </div>
                             <div id="topic" class="card-body">
 
                             </div>
+
                         </div>
                     </div>
 
@@ -230,6 +235,7 @@
 
 <!--图表插件-->
 <script type="text/javascript" src="js/Chart.js"></script>
+<script src="js/jconfirm/jquery-confirm.min.js"></script>
 <script>
     (function ($) {
         $.getUrlParam = function (name) {
@@ -240,6 +246,22 @@
         }
     })(jQuery);
     var id = $.getUrlParam('id');
+
+    $.ajax({
+        type: 'get',
+        url: '/get_info',
+        traditional : true,
+        //同步
+        async: false,
+        dataType: 'json',
+        success: function (data) {
+            $("#username").text(data.username);
+            $("#name").text(data.name);
+
+        }, error: function () {
+
+        }
+    });
 
     //查导语和原文
     $.ajax({
@@ -285,11 +307,70 @@
             for (var i = 0; i < len; i++) {
                 myHtml += "<div class='form-control' style='border: none'><a href='/reply?id=" + myJson[i].id + "'>" + myJson[i].topic_title + "</a></div>";
             }
+            myHtml += "<button class=\"btn btn-primary example-p-3\">发布话题</button>";
             $("#topic").html(myHtml);
 
         }, error: function () {
 
         }
+    });
+
+    $('.example-p-3').on('click', function () {
+        $.confirm({
+            title: '提示',
+            content: '' +
+                '<form action="" class="formName">' +
+                '<div class="form-group">' +
+                '<label>请输入话题标题</label>' +
+                '<input type="text" placeholder="标题" class="name form-control" required />' +
+                '</div>' +
+                '</form>',
+            buttons: {
+                formSubmit: {
+                    text: '提交',
+                    btnClass: 'btn-blue',
+                    action: function () {
+                        var name = this.$content.find('.name').val();
+                        if(!name){
+                            $.alert('请输入话题标题！');
+                            return false;
+                        }else{
+                            $.ajax({
+                                type: 'post',
+                                url: '/post_topic',
+                                data:{
+                                    "id" : id,
+                                    "title" : name,
+                                    "username" : $("#username").text()
+                                },
+                                traditional : true,
+                                //同步
+                                async: false,
+                                dataType: 'json',
+                                success: function (data) {
+                                    $.alert("话题发布成功！");
+                                    location.reload();
+                                }, error: function () {
+                                    $.alert("话题发布失败！");
+                                }
+                            });
+
+                        }
+
+                    }
+                },
+                cancel: {
+                    text: '取消'
+                },
+            },
+            onContentReady: function () {
+                var jc = this;
+                this.$content.find('form').on('submit', function (e) {
+                    e.preventDefault();
+                    jc.$$formSubmit.trigger('click');
+                });
+            }
+        });
     });
 </script>
 

@@ -1,6 +1,10 @@
 package com.example.reading.dao;
 
+import com.example.reading.entities.SmallReply;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -11,4 +15,19 @@ public interface Mapper {
 
     @Select("select reply_id from relation_topic_reply where topic_id = #{topic_id}")
     public List<Integer> relation_topic_reply(Integer topic_id);
+
+    @Insert("insert into relation_poem_topic value (#{id},#{max_id})")
+    public int insertPoemTopicRelation(@Param("id") Integer id, @Param("max_id") Integer max_id);
+
+    @Insert("insert into relation_topic_reply value (#{id},#{max_id})")
+    public int insertTopicReplyRelation(@Param("id") Integer id, @Param("max_id") Integer max_id);
+
+    @Select("select * from small_reply where reply_id = #{reply_id}")
+    public List<SmallReply> selectSmallReply(Integer reply_id);
+
+    @Insert("insert into small_reply (`text`,`username`,`reply_id`) values (#{text},#{username},#{reply_id})")
+    public int insertSmallReply(SmallReply smallReply);
+
+    @Update("update reply set `like` = `like` + #{num} where id = #{id}")
+    public int giveLike(@Param("num") int num, @Param("id") int id);
 }

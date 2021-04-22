@@ -2,6 +2,7 @@ package com.example.reading.dao;
 
 import com.example.reading.entities.Reply;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface ReplyMapper {
@@ -16,4 +17,7 @@ public interface ReplyMapper {
     int updateByPrimaryKeySelective(Reply record);
 
     int updateByPrimaryKey(Reply record);
+
+    @Select("select max(id) from reply")
+    int selectMaxId();
 }
