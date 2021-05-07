@@ -16,5 +16,15 @@ mybatis:
   mapper-locations: /mapper/*.xml
   
 server:
-  port: 8001
+  port: 8080
+  ssl:
+    key-store: src/main/resources/templates/keystore.p12
+    key-store-password: 123456
+    key-store-type: PKCS12
+    key-alias: tomcat
+
+
+
+
+
 
