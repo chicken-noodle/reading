@@ -21,7 +21,7 @@ public interface PoemMapper {
 
     int updateByPrimaryKey(Poem record);
 
-    @Select("select * from poem")
+    @Select("select id,title from poem")
     public List<Poem> selectAllWork();
 
 
