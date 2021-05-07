@@ -116,7 +116,7 @@
 
         function log(str) {
             if (config.debug) {
-                console.log(str);
+
             }
         }
     }

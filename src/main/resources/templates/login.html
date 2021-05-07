@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="zh">
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
@@ -67,6 +68,9 @@
                     <div class="sidebar-header">
                         <h3>登录</h3>
                     </div>
+
+
+
                     <div class="lyear-layout-sidebar-scroll">
 
                         <nav class="sidebar-main">
@@ -172,11 +176,12 @@
                             立即登录
                         </button>
                     </div>
+                    <p style="color:red;" th:text="${message}"></p>
                     <span>没有账号？<a href="/register">点此</a>注册</span>
                 </form>
                 <hr>
                 <footer class="col-sm-12 text-center">
-                    欢迎来到文学经典导读系统
+                    欢迎来到文学经典导读
                 </footer>
             </div>
         </div>
@@ -188,6 +193,7 @@
 <script src="js/main.min.js"></script>
 <script src="js/bootstrap-notify.min.js"></script>
 <script src="js/lightyear.js"></script>
+
 
 </body>
 </html>

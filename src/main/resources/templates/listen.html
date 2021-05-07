@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <title>首页</title>
+    <link rel="icon" href="../static/favicon.ico" type="image/ico">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="css/style.min.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        <aside class="lyear-layout-sidebar">
+
+            <!-- logo -->
+            <div id="logo" class="sidebar-header">
+
+            </div>
+            <div class="lyear-layout-sidebar-scroll">
+
+                <nav class="sidebar-main">
+                    <ul class="nav nav-drawer">
+                        <li class="nav-item active"><a href="/index"><i class="mdi mdi-home"></i>回到首页</a></li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-footer">
+
+                </div>
+            </div>
+
+        </aside>
+        <!--End 左侧导航-->
+
+        <!--头部信息-->
+        <header class="lyear-layout-header">
+
+            <nav class="navbar navbar-default">
+                <div class="topbar">
+
+                    <div class="topbar-left">
+                        <div class="lyear-aside-toggler">
+                            <span class="lyear-toggler-bar"></span>
+                            <span class="lyear-toggler-bar"></span>
+                            <span class="lyear-toggler-bar"></span>
+                        </div>
+                        <span class="navbar-page-title"> 语音列表 </span>
+                    </div>
+
+                    <ul class="topbar-right">
+                        <li class="dropdown dropdown-profile">
+                            <a href="javascript:void(0)" data-toggle="dropdown">
+                                <span id="name"> <span class="caret"></span></span>
+                                <span id="username" style="display:none;"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <li class="divider"></li>
+                                <li><a href="/logout"><i class="mdi mdi-logout-variant"></i> 退出登录</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                </div>
+            </nav>
+
+        </header>
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+
+            <div class="container-fluid">
+
+                <div class="row">
+
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <p id="ans3" style="display: none" th:text="${ans3}"></p>
+                            <div class="card-header">
+                                <h4>朗读列表</h4>
+                            </div>
+                            <div id="read-list" class="card-body">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/perfect-scrollbar.min.js"></script>
+<script src="js/main.min.js"></script>
+<script src="js/bootstrap-notify.min.js"></script>
+<script src="js/lightyear.js"></script>
+
+<!--图表插件-->
+<script type="text/javascript" src="js/Chart.js"></script>
+<script>
+    $(function () {
+
+        (function ($) {
+            $.getUrlParam = function (name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return unescape(r[2]);
+                return null;
+            }
+        })(jQuery);
+        var id = $.getUrlParam('id');
+
+        $(function () {
+            var myList = $("#ans3").text();
+            var myJson = JSON.parse(myList);
+            var len = Object.keys(myJson).length;
+
+            for(var i=0;i<len;i++){
+                $("#read-list").append("<p style='font-weight: bold'>"+myJson[i]["username"]+"</p>");
+                $("#read-list").append("<audio src='/userAudio/"+myJson[i]["user_id"]+"_"+id+".mp3' controls='controls'>"+"</audio>");
+                $("#read-list").append("<br><br>");
+            }
+        });
+
+
+        $.ajax({
+            type: 'get',
+            url: '/workList',
+            traditional: true,
+            //同步
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+                //<div class="form-control" style="border: none"><a href="/login">经典作品标题</a></div>
+                var myHtml = "";
+                var myJson = data;
+                var len = Object.keys(myJson).length;
+                for (var i = 0; i < len; i++) {
+                    myHtml += "<div class='form-control' style='border: none'><a href='/classic?id=" + myJson[i].id + "'>" + myJson[i].title + "</a></div>";
+                }
+                $("#work-list").html(myHtml);
+            }, error: function () {
+
+            }
+        });
+    });
+
+    $.ajax({
+        type: 'get',
+        url: '/get_info',
+        traditional : true,
+        //同步
+        async: false,
+        dataType: 'text',
+        success: function (data1) {
+            var data;
+            if(data1==""){
+                window.location.href = "/login";
+            }else{
+                data = JSON.parse(data1);
+            }
+            $("#username").text(data.username);
+            $("#name").text(data.name);
+        }, error: function () {
+
+        }
+    });
+
+</script>
+
+</body>
+</html>

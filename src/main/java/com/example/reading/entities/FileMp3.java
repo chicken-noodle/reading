@@ -3,9 +3,14 @@ package com.example.reading.entities;
 public class FileMp3 {
     private Integer id;
 
-    private String file_path;
+    private Integer user_id;
 
     private String username;
+
+    private Integer poem_id;
+
+    public FileMp3() {
+    }
 
     public Integer getId() {
         return id;
@@ -15,12 +20,12 @@ public class FileMp3 {
         this.id = id;
     }
 
-    public String getFile_path() {
-        return file_path;
+    public Integer getUser_id() {
+        return user_id;
     }
 
-    public void setFile_path(String file_path) {
-        this.file_path = file_path == null ? null : file_path.trim();
+    public void setUser_id(Integer user_id) {
+        this.user_id = user_id;
     }
 
     public String getUsername() {
@@ -29,5 +34,28 @@ public class FileMp3 {
 
     public void setUsername(String username) {
         this.username = username == null ? null : username.trim();
+    }
+
+    public Integer getPoem_id() {
+        return poem_id;
+    }
+
+    public void setPoem_id(Integer poem_id) {
+        this.poem_id = poem_id;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("{");
+        sb.append("\"id\":")
+                .append(id);
+        sb.append(",\"user_id\":")
+                .append(user_id);
+        sb.append(",\"username\":\"")
+                .append(username).append('\"');
+        sb.append(",\"poem_id\":")
+                .append(poem_id);
+        sb.append('}');
+        return sb.toString();
     }
 }
