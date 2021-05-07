@@ -139,7 +139,14 @@ public class Controller {
     @RequestMapping("/selectWork")
     public String selectWork(Integer id) {
         Poem poem = poemMapper.selectByPrimaryKey(id);
-        return poem.toString();
+        return poem.getGuide_lang();
+    }
+
+    @ResponseBody
+    @RequestMapping("/selectWork2")
+    public String selectWork2(Integer id) {
+        Poem poem = poemMapper.selectByPrimaryKey(id);
+        return poem.getText();
     }
 
     @ResponseBody

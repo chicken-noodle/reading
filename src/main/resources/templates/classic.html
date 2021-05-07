@@ -158,6 +158,13 @@
 <script src="js/bootstrap-notify.min.js"></script>
 <script src="js/lightyear.js"></script>
 
+<style>
+    pre{
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+</style>
+
 <!--图表插件-->
 <script type="text/javascript" src="js/Chart.js"></script>
 <script src="js/jconfirm/jquery-confirm.min.js"></script>
@@ -192,6 +199,8 @@
     });
 
     //查导语和原文
+
+    //查导语
     $.ajax({
         type: 'get',
         url: '/selectWork',
@@ -201,19 +210,38 @@
         traditional: true,
         //同步
         async: false,
-        dataType: 'json',
+        dataType: 'text',
         success: function (data) {
             var myHtml = "";
-            var myJson = data;
-            var str = "<p style='font-weight: bold'>导语：</p>"+"<p>"+data.guide_lang+"</p>";
-            var str2 = "<p style='font-weight: bold'>原文：</p>"+"<p>"+data.text+"</p>" + "<br/><br/> <p style='font-weight: bold'>原文语音：</p>";
+            var str = "<p style='font-weight: bold'>导语：</p>"+"<pre>"+data+"</pre>";
             $("#guide").html(str);
+        }, error: function () {
+            alert("失败");
+        }
+    });
+
+
+    //查原文
+    $.ajax({
+        type: 'get',
+        url: '/selectWork2',
+        data: {
+            "id": id
+        },
+        traditional: true,
+        //同步
+        async: false,
+        dataType: 'text',
+        success: function (data) {
+            var myHtml = "";
+            var str2 = "<p style='font-weight: bold'>原文：</p>"+"<pre style='width: 100%'>"+data+"</pre>" + "<br/><br/> <p style='font-weight: bold'>原文语音：</p>";
             $("#text").html(str2);
 
         }, error: function () {
-
+            alert("失败");
         }
     });
+
 
     $.ajax({
         type: 'get',
